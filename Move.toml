@@ -1,0 +1,15 @@
+[package]
+name = "alt_bn128_bls"
+edition = "2024.beta"
+version = "0.1.0"
+license = "MIT"
+authors = ["Dean Little (@deanmlittle"]
+
+[dependencies]
+
+[addresses]
+alt_bn128_bls = "0x1"
+
+[dev-dependencies]
+
+[dev-addresses]
