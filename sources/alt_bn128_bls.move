@@ -15,55 +15,13 @@ module alt_bn128_bls::alt_bn128_bls {
     /// pubkey: A 64-byte vector representing a compressed BN254 G1 point
     /// hash_pointt: A 32-byte vector representing a compressed BN254 G1 point
     /// 
-    /// This function works by nulling out some values in the groth16 verifier
-    /// to simplify the equation into a simple pairing check t overify BLS
-    /// signatures. 
-    /// 
-    /// It assumes that you have externally checked that `hash_point` 
-    /// is on-curve. Providing an off-curve `hash_point` will result in an `abort`.
-    public fun verify(signature: vector<u8>, pubkey: vector<u8>, hash_point: vector<u8>): bool {  
-        // Check lengths
-        assert!(std::vector::length(&signature) == 32, EINCORRECT_SIG_LENGTH);
-        assert!(std::vector::length(&pubkey) == 64, EINCORRECT_PUBKEY_LENGTH);
-        assert!(std::vector::length(&hash_point) == 32, EINCORRECT_HASH_LENGTH);      
-
-        // Flip byte order of hash
-        let mut vk_bytes = copy hash_point;
-
-        // Concatenate the reversed hash point and pubkey with the static part of the vk
-        std::vector::append(&mut vk_bytes, pubkey);
-        std::vector::append(&mut vk_bytes, STATIC_VK_BYTES);
-        
-        // Prepare the verifying key
-        let pvk = groth16::prepare_verifying_key(&groth16::bn254(), &vk_bytes);
-        
-        // Create the proof points using the provided signature
-        let mut proof_bytes = copy signature;
-        std::vector::append(&mut proof_bytes, x"edf692d95cbdde46ddda5ef7d422436779445c5e66006a42761e1f12efde0018c212f3aeb785e49712e7a9353349aaf1255dfb31b7bf60723a480d9293938e190000000000000000000000000000000000000000000000000000000000000040");
-
-        let proof_points = groth16::proof_points_from_bytes(proof_bytes);
-        
-        // Public inputs remain empty as per the original implementation
-        let public_inputs = groth16::public_proof_inputs_from_bytes(x"");
-        
-        // Verify the proof
-        groth16::verify_groth16_proof(&groth16::bn254(), &pvk, &public_inputs, &proof_points)
-    }
-
-    /// # Verify VK
-    /// This function verifies BN254 (AltBN128) BLS signature. It takes 3 parameters:
-    /// 
-    /// signature: A 32-byte vector representing a compressed BN254 G1 point
-    /// pubkey: A 64-byte vector representing a compressed BN254 G1 point
-    /// hash_pointt: A 32-byte vector representing a compressed BN254 G1 point
-    /// 
     /// This function works by abusing the prepare_verifying_key function with
     /// null inputs to simplify the equation into a single pairing, performs
     /// two pairs, then compares results to verify.
     /// 
     /// It assumes that you have externally checked that `hash_point` is on-curve. 
     /// Providing an off-curve `hash_point` will result in an `abort`.
-    public fun verify_vk(signature: vector<u8>, pubkey: vector<u8>, hash_point: vector<u8>): bool {    
+    public fun verify(signature: vector<u8>, pubkey: vector<u8>, hash_point: vector<u8>): bool {    
         // Check lengths
         assert!(std::vector::length(&signature) == 32, EINCORRECT_SIG_LENGTH);
         assert!(std::vector::length(&pubkey) == 64, EINCORRECT_PUBKEY_LENGTH);
