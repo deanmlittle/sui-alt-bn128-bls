@@ -12,7 +12,7 @@ module alt_bn128_bls::alt_bn128_bls {
     /// This function verifies BN254 (AltBN128) BLS signature. It takes 3 parameters:
     /// 
     /// signature: A 32-byte vector representing a compressed BN254 G1 point
-    /// pubkey: A 64-byte vector representing a compressed BN254 G1 point
+    /// pubkey: A 64-byte vector representing a compressed BN254 G2 point
     /// hash_pointt: A 32-byte vector representing a compressed BN254 G1 point
     /// 
     /// This function works by abusing the prepare_verifying_key function with
